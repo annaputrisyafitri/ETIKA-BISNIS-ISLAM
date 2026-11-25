@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b45">
+  <title>VR Etika Bisnis Islam</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <style>
+    html, body { margin: 0; font-family: Arial, sans-serif; }
+    .vr-topbar {
+      position: fixed; z-index: 10; top: 12px; left: 12px;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .vr-topbar a, .vr-topbar button {
+      border: 0; border-radius: 8px; padding: 10px 13px;
+      color: #fff; background: #176b45; text-decoration: none;
+      font-weight: 700; cursor: pointer;
+    }
+    .vr-topbar button { background: #344b9b; }
+    .vr-instruction {
+      position: fixed; z-index: 10; bottom: 12px; left: 12px; right: 12px;
+      background: rgba(0,0,0,.72); color: white; padding: 10px 12px;
+      border-radius: 9px; font-size: 13px; text-align: center;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="vr-topbar">
+    <a href="./">Kembali</a>
+    <button id="reset-view" type="button">Atur ulang pandangan</button>
+  </nav>
+  <div class="vr-instruction">
+    Desktop: gunakan mouse untuk melihat dan W-A-S-D untuk bergerak.
+    Headset: pilih tombol VR di kanan bawah. Arahkan kursor ke objek dan klik/pilih.
+  </div>
+
+  <a-scene
+    renderer="antialias: true; colorManagement: true"
+    background="color: #9bc9e8"
+    xr-mode-ui="XRMode: vr">
+
+    <a-assets>
+      <a-mixin id="market-material" material="roughness: 0.85"></a-mixin>
+    </a-assets>
+
+    <!-- Lingkungan -->
+    <a-plane rotation="-90 0 0" width="40" height="40"
+             color="#c9b38b" shadow></a-plane>
+    <a-sky color="#9bc9e8"></a-sky>
+    <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
+    <a-light type="directional" position="-3 8 5" intensity="1"
+             cast-shadow="true"></a-light>
+
+    <!-- Bangunan dan kios pasar -->
+    <a-box position="0 2 -7" width="14" height="4" depth="0.35"
+           color="#b66d3c"></a-box>
+    <a-box position="0 4.15 -7" width="15" height="0.35" depth="5"
+           color="#70452d"></a-box>
+
+    <a-box position="-4 1.1 -3.5" width="2.5" height="2.2" depth="1.8"
+           color="#d99d50"></a-box>
+    <a-box position="0 1.1 -3.5" width="2.5" height="2.2" depth="1.8"
+           color="#b8793e"></a-box>
+    <a-box position="4 1.1 -3.5" width="2.5" height="2.2" depth="1.8"
+           color="#d99d50"></a-box>
+
+    <!-- Kanopi kios -->
+    <a-box position="-4 2.35 -3.5" width="2.8" height="0.18" depth="2"
+           color="#176b45"></a-box>
+    <a-box position="0 2.35 -3.5" width="2.8" height="0.18" depth="2"
+           color="#344b9b"></a-box>
+    <a-box position="4 2.35 -3.5" width="2.8" height="0.18" depth="2"
+           color="#176b45"></a-box>
+
+    <!-- Papan utama -->
+    <a-box position="0 3.1 -4.7" width="6.4" height="1.45" depth="0.18"
+           color="#176b45"></a-box>
+    <a-text value="PASAR BERETIKA" position="0 3.45 -4.59"
+            align="center" color="#ffffff" width="7"></a-text>
+    <a-text value="JUJUR  |  AMANAH  |  ADIL"
+            position="0 3.0 -4.59" align="center"
+            color="#fff0bd" width="6"></a-text>
+    <a-text value="Transaksi halal dan bertanggung jawab"
+            position="0 2.65 -4.59" align="center"
+            color="#ffffff" width="5.5"></a-text>
+
+    <!-- Objek pembelajaran interaktif -->
+    <a-box class="lesson-object" data-title="JUJUR" data-info="JUJUR: Penjual menyampaikan kondisi, kualitas, ukuran, dan harga barang secara benar. Tidak boleh menyembunyikan cacat atau memanipulasi informasi."
+      position="-4 1.7 -1.8" width="0.85" height="0.85" depth="0.85"
+      color="#e0ad35" rotation="0 25 0"
+      animation="property: rotation; to: 0 385 0; loop: true; dur: 9000"></a-box>
+    <a-text value="JUJUR" position="-4.8 2.35 -1.8"
+      color="#17251d" width="2.2" align="center"></a-text>
+
+    <a-box class="lesson-object" data-title="AMANAH" data-info="AMANAH: Pelaku usaha menjaga kepercayaan, memenuhi kesepakatan, menepati janji, dan menyerahkan barang sesuai pesanan."
+      position="0 1.7 -1.8" width="0.85" height="0.85" depth="0.85"
+      color="#3d9b75" rotation="0 25 0"></a-box>
+    <a-text value="AMANAH" position="-0.85 2.35 -1.8"
+      color="#17251d" width="2.2" align="center"></a-text>
+
+    <a-box class="lesson-object" data-title="ADIL" data-info="ADIL: Penjual dan pembeli memperoleh haknya. Timbangan, takaran, harga, dan perlakuan kepada konsumen tidak boleh dicurangi."
+      position="4 1.7 -1.8" width="0.85" height="0.85" depth="0.85"
+      color="#477fc5" rotation="0 25 0"></a-box>
+    <a-text value="ADIL" position="3.25 2.35 -1.8"
+      color="#17251d" width="2.2" align="center"></a-text>
+
+    <!-- Panel penjelasan yang diperbarui saat objek dipilih -->
+    <a-plane id="info-panel" position="0 1.65 -5.7"
+      width="5.8" height="1.35" color="#ffffff"
+      material="shader: flat; opacity: 0.96"></a-plane>
+    <a-text id="info-title" value="PILIH OBJEK PEMBELAJARAN"
+      position="0 2.05 -5.62" align="center"
+      color="#176b45" width="6"></a-text>
+    <a-text id="info-body"
+      value="Arahkan kursor ke objek JUJUR, AMANAH, atau ADIL, lalu pilih."
+      position="-2.55 1.65 -5.62" align="left"
+      color="#26332b" width="5.1" wrap-count="62"></a-text>
+
+    <!-- Kamera dan kontrol desktop/headset -->
+    <a-entity id="rig" position="0 1.6 5">
+      <a-camera id="camera" wasd-controls="acceleration: 25" look-controls>
+        <a-cursor
+          raycaster="objects: .lesson-object; far: 20"
+          fuse="false"
+          color="#ffcc33"
+          material="shader: flat"
+          geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.014">
+        </a-cursor>
+      </a-camera>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    (function () {
+      const title = document.getElementById('info-title');
+      const body = document.getElementById('info-body');
+      const objects = document.querySelectorAll('.lesson-object');
+
+      function showLesson(object) {
+        title.setAttribute('value', object.getAttribute('data-title') || 'Informasi');
+        body.setAttribute('value', object.getAttribute('data-info') || 'Belum ada penjelasan.');
+      }
+
+      objects.forEach(function (object) {
+        object.addEventListener('click', function () {
+          showLesson(object);
+        });
+        object.addEventListener('mouseenter', function () {
+          object.setAttribute('scale', '1.12 1.12 1.12');
+        });
+        object.addEventListener('mouseleave', function () {
+          object.setAttribute('scale', '1 1 1');
+        });
+      });
+
+      document.getElementById('reset-view').addEventListener('click', function () {
+        const rig = document.getElementById('rig');
+        rig.setAttribute('position', '0 1.6 5');
+        const camera = document.getElementById('camera');
+        camera.setAttribute('rotation', '0 0 0');
+      });
+    })();
+  </script>
+</body>
+</html>

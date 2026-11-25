@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b45">
+  <title>AR Etika Bisnis Islam</title>
+
+  <!-- A-Frame dan AR.js: gunakan HTTPS saat dipublikasikan di GitHub Pages -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden;
+      font-family: Arial, sans-serif; background: #111; }
+    .ar-info {
+      position: fixed; z-index: 20; top: 12px; left: 12px; right: 12px;
+      padding: 12px 14px; border-radius: 12px;
+      color: #fff; background: rgba(12, 35, 25, .88);
+      text-align: center; line-height: 1.45; font-size: 14px;
+    }
+    .ar-info strong { display: block; font-size: 17px; margin-bottom: 3px; }
+    .ar-actions {
+      position: fixed; z-index: 20; bottom: 18px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 10px; padding: 0 12px;
+    }
+    .ar-actions a, .ar-actions button {
+      border: 0; border-radius: 9px; padding: 11px 16px;
+      background: #176b45; color: white; text-decoration: none;
+      font-weight: 700; font-size: 14px;
+    }
+    .ar-actions button { background: #344b9b; }
+    .hint { font-size: 12px; opacity: .9; }
+    #ar-status { font-size: 12px; margin-top: 4px; color: #d9f7e7; }
+  </style>
+</head>
+<body>
+  <header class="ar-info">
+    <strong>Augmented Reality — Etika Bisnis Islam</strong>
+    Arahkan kamera ke marker Hiro. Pastikan marker terlihat jelas dan mendapat cahaya cukup.
+    <div class="hint">Cetak marker Hiro dari: https://ar-js-org.github.io/AR.js/data/images/HIRO.jpg</div>
+    <div id="ar-status" role="status">Menyiapkan kamera...</div>
+  </header>
+
+  <div class="ar-actions">
+    <a href="./">Kembali ke halaman utama</a>
+    <button type="button" id="switch-camera">Ganti kamera</button>
+  </div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; antialias: true"
+    arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
+
+    <a-marker preset="hiro" id="hiro-marker">
+      <!-- Alas miniatur -->
+      <a-box position="0 0.02 0" width="2.3" height="0.04" depth="1.5"
+             color="#d9c39a"></a-box>
+
+      <!-- Kios -->
+      <a-box position="-0.55 0.48 0" width="0.72" height="0.9" depth="0.65"
+             color="#b8793e"></a-box>
+      <a-box position="0.35 0.48 0" width="0.72" height="0.9" depth="0.65"
+             color="#d7a34a"></a-box>
+      <a-box position="-0.55 0.98 0" width="0.82" height="0.12" depth="0.72"
+             color="#176b45"></a-box>
+      <a-box position="0.35 0.98 0" width="0.82" height="0.12" depth="0.72"
+             color="#176b45"></a-box>
+
+      <!-- Papan prinsip -->
+      <a-box position="0 1.05 -0.42" width="1.8" height="0.55" depth="0.06"
+             color="#176b45"></a-box>
+      <a-text value="ETIKA BISNIS ISLAM" position="0 1.18 -0.375"
+              align="center" color="#ffffff" width="2.3"></a-text>
+      <a-text value="JUJUR  •  AMANAH  •  ADIL" position="0 0.98 -0.375"
+              align="center" color="#fff3c4" width="2"></a-text>
+
+      <!-- Objek dekoratif bergerak -->
+      <a-sphere position="0 1.55 0" radius="0.13" color="#f1c40f"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 3500"></a-sphere>
+      <a-text value="Transaksi yang halal dan bertanggung jawab"
+              position="0 1.82 0" align="center" color="#ffffff" width="2.8"></a-text>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    (function () {
+      const status = document.getElementById('ar-status');
+      const marker = document.getElementById('hiro-marker');
+      const switchButton = document.getElementById('switch-camera');
+      let currentFacing = 'environment';
+
+      window.addEventListener('load', function () {
+        status.textContent = 'Izinkan akses kamera, lalu arahkan kamera ke marker Hiro.';
+      });
+
+      if (marker) {
+        marker.addEventListener('markerFound', function () {
+          status.textContent = 'Marker terdeteksi — objek AR aktif.';
+        });
+        marker.addEventListener('markerLost', function () {
+          status.textContent = 'Marker tidak terlihat. Arahkan kamera kembali ke marker.';
+        });
+      }
+
+      // Pergantian kamera memakai restart sumber video AR.js.
+      // Dukungan bergantung pada browser/perangkat.
+      switchButton.addEventListener('click', async function () {
+        currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+        status.textContent = 'Meminta kamera ' +
+          (currentFacing === 'environment' ? 'belakang...' : 'depan...');
+        const video = document.querySelector('video');
+        if (!video || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          status.textContent = 'Pergantian kamera tidak didukung browser ini. Gunakan pengaturan kamera browser.';
+          return;
+        }
+        try {
+          const stream = video.srcObject;
+          if (stream) stream.getTracks().forEach(track => track.stop());
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: { facingMode: { ideal: currentFacing } }
+          });
+          video.srcObject = newStream;
+          await video.play();
+          status.textContent = 'Kamera berhasil diganti.';
+        } catch (error) {
+          status.textContent = 'Kamera tidak dapat diganti. Muat ulang halaman dan izinkan akses kamera.';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
